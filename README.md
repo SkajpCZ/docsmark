@@ -1,4 +1,4 @@
-# docsmark | v1.0.0
+# docsmark | v1.0.1
 Simple dockerized markdown documentation website written in nodejs
 
 

@@ -11,7 +11,7 @@ const hljs = require('highlight.js');
 const markdownItMultimdTable = require('markdown-it-multimd-table');
 const toml = require('toml');
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 
 const app = express();
 
@@ -124,10 +124,10 @@ app.get('/:category/:file', (req, res) => {
         if (level <= 3) {
           const contentToken = state.tokens[idx + 1];
           let text = contentToken.content;
+          text = text.replace(/\/\//g, '').replace(/\\/g, ''); // Remove // anywhere
 
           // Slug / id
           const slug = text
-            .replace(/\/\//g, '').replace(/\\/g, '')  // Remove // anywhere
             .normalize("NFD")                         // remove accents
             .replace(/[\u0300-\u036f]/g, '')          // remove diacritics
             .replace(/[^\w\s-<>]/g, '')               // allow letters, digits, whitespace, dash, <, >
@@ -144,8 +144,7 @@ app.get('/:category/:file', (req, res) => {
       }
     });
   });
-
-
+  
   if (data.katex) md.use(markdownItKatex);
 
   const html = md.render(content);
