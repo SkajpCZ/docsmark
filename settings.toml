@@ -1,0 +1,27 @@
+[global]
+site-prefix = "Docsmark"
+site-favicon = "/assets/favicon.ico"
+highlight-color = "#4fc3f7"
+
+[meta]
+meta-description = "The official Docsmark Documentation"
+# Facebook
+facebook-url = "http://localhost:8080"
+facebook-type = "website"
+facebook-title = "Docsmark Documentation"
+facebook-description = "http://localhost:8080"
+facebook-image = ""
+# Twitter
+twitter-card = "summary_large_image"
+twitter-domain = "localhost:8080"
+twitter-url = "http://localhost:8080"
+twitter-title = "Docsmark"
+twitter-description = "Docsmark Documentation"
+twitter-image = ""
+
+[navbar]
+home-button = "Docsmark"
+
+[homepage]
+title = "Docsmark"
+description = "The official Docsmark Documentation"

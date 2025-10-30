@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= siteSettings.global?.['site-prefix'] || 'Documentation' %> | <%= title %></title>
+  <style>
+    :root {
+      --highlight-color: <%= siteSettings.global?.['highlight-color'] || '#4fc3f7'%>; 
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/atom-one-dark.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous>
+  <link rel="stylesheet" href="/assets/boxicons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+ <link rel="icon" href="<%= siteSettings.global?.['site-favicon'] || '/assets/favicon.ico' %>">
+  <meta name="description" content="<%= siteSettings.meta?.['meta-description'] || '' %>">
+  <!-- Facebook meta -->
+  <meta property="og:title" content="<%= siteSettings.meta?.['facebook-title'] || '' %>">
+  <meta property="og:description" content="<%= siteSettings.meta?.['facebook-description'] || '' %>">
+  <meta property="og:url" content="<%= siteSettings.meta?.['facebook-url'] || '' %>">
+  <meta property="og:type" content="<%= siteSettings.meta?.['facebook-type'] || 'website' %>">
+  <meta property="og:image" content="<%= siteSettings.meta?.['facebook-image'] || '' %>">
+  <!-- Twitter meta -->
+  <meta name="twitter:card" content="<%= siteSettings.meta?.['twitter-card'] || '' %>">
+  <meta name="twitter:domain" content="<%= siteSettings.meta?.['twitter-domain'] || '' %>">
+  <meta name="twitter:url" content="<%= siteSettings.meta?.['twitter-url'] || '' %>">
+  <meta name="twitter:title" content="<%= siteSettings.meta?.['twitter-title'] || '' %>">
+  <meta name="twitter:description" content="<%= siteSettings.meta?.['twitter-description'] || '' %>">
+  <meta name="twitter:image" content="<%= siteSettings.meta?.['twitter-image'] || '' %>">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="/"><%= siteSettings.navbar?.['home-button']%></a>
+    </div>
+    <div class="nav-middle">
+      <% if (currentCategory) { %>
+        <span><%= currentCategory %></span>
+      <% } %>
+    </div>
+    <div class="nav-right">
+      by <a href="https://github.com/SkajpCZ" target="_blank"  style="color: var(--highlight-color)">Skajp</a> | <a href="https://github.com/SkajpCZ/docsmark" target="_blank" style="color: var(--highlight-color)"><%= VERSION %></a>
+    </div>
+  </nav>
+
+  <aside class="sidebar" id="sidebar">
+  <% for (let category in categories) { %>
+      <h2><a href="/<%= category %>"><i class="fa-solid fa-folder" style="font-size: 0.85em;"></i> <%= category %></a></h2>
+      <ul>
+      <% categories[category].forEach(file => { %>
+          <li class="<%= (currentFile === file.file && currentCategory === category) ? 'active' : '' %>">
+          <a href="/<%= category %>/<%= file.file %>">
+              <% if (file.icon) { %>
+              <i class="<%= file.icon %>"></i>
+              <% } else { %>
+              <i class="fa-solid fa-file-lines"></i>
+              <% } %>
+              <%= file.title %>
+          </a>
+          </li>
+      <% }) %>
+      </ul>
+  <% } %>
+  </aside>
+
+  <main class="content">
+    <h1 class="doc-title"><%= title %></h1>
+    <div class="doc-content"><%- body %></div>
+    <div class="doc-nav">
+      <% 
+        const allFiles = [];
+        for (let cat in categories) {
+          categories[cat].forEach(f => allFiles.push({ category: cat, file: f.file, title: f.title }));
+        }
+        const currentIndex = allFiles.findIndex(f => f.category === currentCategory && f.file === currentFile);
+        const prevFile = allFiles[currentIndex - 1] || null;
+        const nextFile = allFiles[currentIndex + 1] || null;
+      %>
+
+      <% if (prevFile) { %>
+        <a class="doc-nav-prev" href="/<%= prevFile.category %>/<%= prevFile.file %>">&lt;&lt; <%= prevFile.title %></a>
+      <% } %>
+      <% if (nextFile) { %>
+        <a class="doc-nav-next" href="/<%= nextFile.category %>/<%= nextFile.file %>"><%= nextFile.title %> &gt;&gt;</a>
+      <% } %>
+    </div>
+    <footer>
+        <p style="user-select: none;text-align: center;margin-top: 22px;">Skajp © 2025</p>
+    </footer>
+  </main>
+
+  <div class="breadcrumbs" id="breadcrumbs">
+    <h2>List of contents</h2>
+    <div>
+      <% if (tocHeadings && tocHeadings.length) { %>
+        <% tocHeadings.forEach(heading => { %>
+          <a href="#<%= heading.id %>"
+             class="toc-link"
+             data-id="<%= heading.id %>"
+             style="padding-left: <%= (heading.level - 1) * 20 %>px;
+                    font-size: <%= 16 - (heading.level - 1) * 1 %>px;">
+            <%= heading.text %>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // TOC active link
+      const links = document.querySelectorAll('.toc-link');
+      const updateActiveBreadcrumb = () => {
+        let current = null;
+        links.forEach(link => {
+          const heading = document.getElementById(link.dataset.id);
+          if (!heading) return;
+          const top = heading.getBoundingClientRect().top;
+          if (top <= 60) current = link;
+        });
+        links.forEach(link => link.classList.toggle('active', link === current));
+      };
+
+      document.querySelector('.content').addEventListener('scroll', updateActiveBreadcrumb);
+      updateActiveBreadcrumb();
+      document.querySelectorAll('.doc-content h1[id], .doc-content h2[id], .doc-content h3[id]').forEach(header => {
+        const link = document.createElement('a');
+        link.className = 'header-link';
+        link.href = `#${header.id}`;
+        link.title = 'Copy link to this section';
+        link.innerHTML = `<i class="fas fa-link"></i>`;
+        header.appendChild(link);
+
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const url = `${window.location.origin}${window.location.pathname}#${header.id}`;
+          navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard!'));
+        });
+      });
+    });
+
+    // Toast notification
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2500);
+    }
+
+    const root = document.documentElement;
+    const hexColor = getComputedStyle(root).getPropertyValue('--highlight-color').trim();
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, '');
+      if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+      }
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    }
+    const [r, g, b] = hexToRgb(hexColor);
+    const rgbString = `${r}, ${g}, ${b}`;
+    console.log(rgbString)
+    root.style.setProperty('--highlight-color-rgb', rgbString);
+  </script>
+
+  <div class="toast-container" id="toast-container"></div>
+</body>
+</html>

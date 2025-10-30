@@ -1,0 +1,10 @@
+services:
+  docker-simple-markdown-docs:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./public:/app/public
+      - ./docs:/app/docs
+      - ./settings.toml:/app/settings.toml
+    restart: unless-stopped

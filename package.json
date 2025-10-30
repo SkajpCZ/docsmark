@@ -1,0 +1,28 @@
+{
+  "name": "documentation-website",
+  "version": "1.0.0",
+  "description": "Simple and fast site for markdown documentation",
+  "license": "GPL-3.0",
+  "author": "Skajp",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "ejs-mate": "^4.0.0",
+    "express": "^5.1.0",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markdown-it-katex": "^2.0.3",
+    "markdown-it-multimd-table": "^4.2.3",
+    "markdown-it-task-lists": "^2.1.1",
+    "markdown-it-toc-done-right": "^4.2.0",
+    "marked": "^16.4.1",
+    "toml": "^3.0.0"
+  }
+}
