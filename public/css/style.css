@@ -7,6 +7,31 @@ body {
   color: #e0e0e0; 
 }
 
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #313131;
+  display: none;
+}
+
+::-webkit-scrollbar-track:hover {
+  display: block;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #A4A4A3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C9C9C7;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 2px;
+}
+
 /* --------------------------------------------------------------------------- */
 .doc-title {
   margin-top: 30px;

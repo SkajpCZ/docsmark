@@ -11,7 +11,7 @@ const hljs = require('highlight.js');
 const markdownItMultimdTable = require('markdown-it-multimd-table');
 const toml = require('toml');
 
-const VERSION = "1.0.1";
+const VERSION = "1.0.2";
 
 const app = express();
 
